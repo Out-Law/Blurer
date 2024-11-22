@@ -3,6 +3,9 @@ package com.example.videodownloadservice.controllers;
 import com.example.videodownloadservice.services.VideoNotificationService;
 import com.example.videodownloadservice.services.VideoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -23,5 +26,13 @@ public class VideoController {
     @PostMapping("/notify/converted")
     public void sendVideoConvertedNotification(@RequestParam String filename) {
         videoNotificationService.sendVideoConvertedNotification(filename);
+    }
+
+    @GetMapping("/videos/{fileName}")
+    public void getVideo(@PathVariable String fileName){
+        Resource video = videoService.loadVideo(fileName);
+        ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + video.getFilename() + "\"")
+                .body(video);
     }
 }

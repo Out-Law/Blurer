@@ -5,12 +5,16 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
@@ -65,6 +69,19 @@ public class VideoService {
                 .build());
 
         return sseEmitterService.createEmitter(dest.getName());
+    }
+
+    @SneakyThrows
+    public Resource loadVideo(String fileName) {
+
+        Path filePath = Paths.get(convertedVideosDirectoryPath).resolve(fileName).normalize();
+        Resource resource = new UrlResource(filePath.toUri());
+
+        if (!resource.exists()) {
+            throw new RuntimeException();
+        }
+
+        return resource;
     }
 
     private String generateFilename(String originalFilename) {
