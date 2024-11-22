@@ -1,0 +1,18 @@
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+RUN apk add --no-cache \
+    git \
+    build-base \
+    cmake \
+    opencv-dev \
+    asio-dev
+
+COPY build/libs/VideoDownloadService-0.0.1-SNAPSHOT.jar app.jar
+COPY ci/
+RUN git submodule update --init --recursive
+RUN ./ci/configure.sh --name blurer --type Debug
+RUN ./ci/build.sh --name blurer --type Debug
+WORKDIR /app/bin
+RUN chmod +x ./blurer
+CMD ["sh", "-c", "./blurer & java -jar /app/app.jar"]
+EXPOSE 8080 8081
