@@ -23,11 +23,6 @@ public class VideoController {
         return videoService.saveVideo(file);
     }
 
-    @PostMapping("/notify/converted")
-    public void sendVideoConvertedNotification(@RequestParam String filename) {
-        videoNotificationService.sendVideoConvertedNotification(filename);
-    }
-
     @GetMapping("/videos/{fileName}")
     public void getVideo(@PathVariable String fileName){
         Resource video = videoService.loadVideo(fileName);
