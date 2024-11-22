@@ -5,19 +5,20 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class VideoService {
 
     private final VideoConverterService videoConverterService;
+    private final SseEmitterService sseEmitterService;
 
     @Value("${video.directory.original}")
     private String originalVideosDirectoryPath;
@@ -45,14 +46,14 @@ public class VideoService {
 
 
     @SneakyThrows
-    public void saveVideo(MultipartFile file) {
+    public SseEmitter saveVideo(MultipartFile file) {
         if (file.isEmpty()) {
             throw new RuntimeException();
         }
 
         File originalVideosDirectory = new File(originalVideosDirectoryPath);
 
-        String filePath = originalVideosDirectory.getAbsolutePath() + File.separator + file.getOriginalFilename();
+        String filePath = originalVideosDirectory.getAbsolutePath() + File.separator + generateFilename(file.getOriginalFilename());
         File dest = new File(filePath);
 
         file.transferTo(dest);
@@ -62,5 +63,12 @@ public class VideoService {
                         .convertedVideosDirectory(convertedVideosDirectoryPath)
                         .videoPath(dest.getName())
                 .build());
+
+        return sseEmitterService.createEmitter(dest.getName());
+    }
+
+    private String generateFilename(String originalFilename) {
+        String[] filenameParts = originalFilename.split("\\.");
+        return UUID.randomUUID() + "." + filenameParts[filenameParts.length - 1];
     }
 }
