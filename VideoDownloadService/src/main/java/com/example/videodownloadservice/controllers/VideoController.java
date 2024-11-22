@@ -20,20 +20,7 @@ public class VideoController {
     private final VideoService videoService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadVideo(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Файл не выбран.");
-        }
-
-        try {
-            String filePath = videoService.saveVideo(file);
-            return ResponseEntity.ok("Файл успешно загружен: " + filePath);
-        } catch (IOException e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Ошибка загрузки файла: " + e.getMessage());
-        }
+    public void uploadVideo(@RequestParam("file") MultipartFile file) {
+        videoService.saveVideo(file);
     }
 }
