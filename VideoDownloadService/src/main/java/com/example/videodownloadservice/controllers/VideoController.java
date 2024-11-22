@@ -1,6 +1,5 @@
 package com.example.videodownloadservice.controllers;
 
-import com.example.videodownloadservice.services.VideoNotificationService;
 import com.example.videodownloadservice.services.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -16,7 +15,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class VideoController {
 
     private final VideoService videoService;
-    private final VideoNotificationService videoNotificationService;
 
     @PostMapping("/upload")
     public SseEmitter uploadVideo(@RequestParam("file") MultipartFile file) {

@@ -17,7 +17,7 @@ public class VideoNotificationService {
     @EventListener
     public void sendNotification(SendNotificationEvent sendNotificationEvent) {
         SseEmitter emitter = sseEmitterService.getEmitter(sendNotificationEvent.filename);
-        notificationSenderService.sendNotification(emitter, NotificationType.VIDEO_CONVERTED, NotificationType.VIDEO_CONVERTED.getMessage());
+        notificationSenderService.sendNotification(emitter, sendNotificationEvent.notificationType, sendNotificationEvent.notificationType.getMessage());
     }
 
     public static class SendNotificationEvent extends ApplicationEvent {
