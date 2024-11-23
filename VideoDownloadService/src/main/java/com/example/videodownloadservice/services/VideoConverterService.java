@@ -21,7 +21,7 @@ public class VideoConverterService {
                 .bodyValue(videoConvertRequest)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .doOnSuccess((v) -> eventPublisher.publishEvent(new SendNotificationEvent(this, NotificationType.VIDEO_CONVERTED, videoConvertRequest.getVideoPath())))
+                .doOnSuccess((v) -> eventPublisher.publishEvent(new SendNotificationEvent(this, NotificationType.VIDEO_CONVERTED, videoConvertRequest.getFilename())))
                 .subscribe();
     }
 }

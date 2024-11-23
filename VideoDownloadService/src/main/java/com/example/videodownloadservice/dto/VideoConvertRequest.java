@@ -13,5 +13,5 @@ public class VideoConvertRequest {
     @JsonProperty("output_path")
     private final String convertedVideosDirectory;
     @JsonProperty("filename")
-    private final String videoPath;
+    private final String filename;
 }

@@ -65,7 +65,7 @@ public class VideoService {
         videoConverterService.sendToConvert(VideoConvertRequest.builder()
                         .originalVideosDirectory(originalVideosDirectoryPath)
                         .convertedVideosDirectory(convertedVideosDirectoryPath)
-                        .videoPath(dest.getName())
+                        .filename(dest.getName())
                 .build());
 
         return sseEmitterService.createEmitter(dest.getName());
