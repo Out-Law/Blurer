@@ -21,10 +21,10 @@ public class VideoController {
         return videoService.saveVideo(file);
     }
 
-    @GetMapping("/videos/{fileName}")
-    public void getVideo(@PathVariable String fileName){
+    @GetMapping("/{fileName}")
+    public ResponseEntity<Resource> getVideo(@PathVariable String fileName){
         Resource video = videoService.loadVideo(fileName);
-        ResponseEntity.ok()
+        return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + video.getFilename() + "\"")
                 .body(video);
     }
