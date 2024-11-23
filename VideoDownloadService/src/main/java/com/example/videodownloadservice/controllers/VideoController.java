@@ -17,7 +17,7 @@ public class VideoController {
     private final VideoService videoService;
 
     @PostMapping("/upload")
-    public String uploadVideo(@RequestParam("file") MultipartFile file, ObjectType objectType) {
+    public String uploadVideo(@RequestParam("file") MultipartFile file, String objectType) {
         return videoService.saveVideo(file, objectType);
     }
 

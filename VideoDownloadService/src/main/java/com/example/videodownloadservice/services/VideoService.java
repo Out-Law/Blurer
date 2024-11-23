@@ -1,7 +1,6 @@
 package com.example.videodownloadservice.services;
 
 import com.example.videodownloadservice.dto.VideoConvertRequest;
-import com.example.videodownloadservice.enums.ObjectType;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -50,7 +49,7 @@ public class VideoService {
 
 
     @SneakyThrows
-    public String saveVideo(MultipartFile file, ObjectType objectType) {
+    public String saveVideo(MultipartFile file, String objectType) {
         if (file.isEmpty()) {
             throw new RuntimeException();
         }

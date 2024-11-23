@@ -1,7 +1,6 @@
 package com.example.videodownloadservice.services;
 
 import com.example.videodownloadservice.dto.ModelInfo;
-import com.example.videodownloadservice.enums.ObjectType;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -13,15 +12,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ModelService {
 
-    private final Map<ObjectType, ModelInfo> objectModels = new ConcurrentHashMap<>();
+    private Map<String, ModelInfo> models;
 
     @Value("${model.directory}")
     private String modelsDirectoryPath;
@@ -29,6 +28,29 @@ public class ModelService {
     @PostConstruct
     private void initDirs() {
         createDirectory(modelsDirectoryPath);
+        addExistingModels();
+    }
+
+    private void addExistingModels() {
+        File folder = new File(modelsDirectoryPath);
+        File[] files = folder.listFiles();
+        List<String> fileNames = Arrays.stream(files).map(File::getName).toList();
+        models = new ConcurrentHashMap<>(fileNames.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                filename -> {
+                                    return filename.substring(filename.indexOf('_') + 1, filename.lastIndexOf('.'));
+                                },
+                                Collectors.collectingAndThen(
+                                    Collectors.toList(),
+                                    (List<String> names) -> {
+                                        return ModelInfo.builder()
+                                            .modelsPath(modelsDirectoryPath)
+                                            .caffe(names.stream().filter(name -> name.startsWith("caffe_")).findFirst().orElseThrow())
+                                            .protoFile(names.stream().filter(name -> name.startsWith("proto_")).findFirst().orElseThrow())
+                                            .build();
+                                    }))));
+        System.out.println(models);
     }
 
     @SneakyThrows
@@ -43,7 +65,7 @@ public class ModelService {
     }
 
     @SneakyThrows
-    public void saveModel(MultipartFile proto, MultipartFile caffe, ObjectType objectType) {
+    public void saveModel(MultipartFile proto, MultipartFile caffe, String objectType) {
         if (proto.isEmpty() || caffe.isEmpty()) {
             throw new RuntimeException();
         }
@@ -64,22 +86,26 @@ public class ModelService {
         proto.transferTo(protoFile);
         caffe.transferTo(caffeFile);
 
-        objectModels.put(objectType, ModelInfo.builder()
+        models.put(objectType, ModelInfo.builder()
                         .modelsPath(modelsDirectoryPath)
                         .protoFile(protoFilename)
                         .caffe(caffeFilename)
                         .build());
     }
 
-    public Optional<ModelInfo> getModelInfo(ObjectType objectType) {
-        return Optional.ofNullable(objectModels.get(objectType));
+    public Optional<ModelInfo> getModelInfo(String objectType) {
+        return Optional.ofNullable(models.get(objectType));
     }
 
-    private String generateFilename(String prefix, String filename, ObjectType objectType) {
+    public Set<String> getModelsNames() {
+        return models.keySet();
+    }
+
+    private String generateFilename(String prefix, String filename, String objectType) {
         String[] filenameParts = filename.split("\\.");
         if (filenameParts.length == 0) {
-            return objectType.name().toLowerCase();
+            return objectType.toLowerCase();
         }
-        return prefix + objectType.name().toLowerCase() + "." + filenameParts[filenameParts.length - 1];
+        return prefix + objectType.toLowerCase() + "." + filenameParts[filenameParts.length - 1];
     }
 }
