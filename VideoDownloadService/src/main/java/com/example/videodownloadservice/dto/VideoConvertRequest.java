@@ -1,6 +1,5 @@
 package com.example.videodownloadservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,10 +7,8 @@ import lombok.Getter;
 @Getter
 public class VideoConvertRequest {
 
-    @JsonProperty("input_path")
-    private final String originalVideosDirectory;
-    @JsonProperty("output_path")
-    private final String convertedVideosDirectory;
-    @JsonProperty("filename")
-    private final String filename;
+    private final String inputPath;
+    private final String outputPath;
+    private final String inputFilename;
+    private final ModelInfo modelInfo;
 }

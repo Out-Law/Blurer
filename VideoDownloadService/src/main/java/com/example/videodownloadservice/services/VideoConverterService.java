@@ -13,7 +13,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class VideoConverterService {
 
     private final WebClient videoConverterServiceWebClient;
-    private final ApplicationEventPublisher eventPublisher;
 
     public String sendToConvert(VideoConvertRequest videoConvertRequest) {
         return videoConverterServiceWebClient.post()

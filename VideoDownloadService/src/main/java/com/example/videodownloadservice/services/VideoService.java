@@ -1,6 +1,7 @@
 package com.example.videodownloadservice.services;
 
 import com.example.videodownloadservice.dto.VideoConvertRequest;
+import com.example.videodownloadservice.enums.ObjectType;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -21,7 +22,7 @@ import java.util.UUID;
 public class VideoService {
 
     private final VideoConverterService videoConverterService;
-    private final SseEmitterService sseEmitterService;
+    private final ModelService modelService;
 
     @Value("${video.directory.original}")
     private String originalVideosDirectoryPath;
@@ -49,7 +50,7 @@ public class VideoService {
 
 
     @SneakyThrows
-    public String saveVideo(MultipartFile file) {
+    public String saveVideo(MultipartFile file, ObjectType objectType) {
         if (file.isEmpty()) {
             throw new RuntimeException();
         }
@@ -62,9 +63,10 @@ public class VideoService {
         file.transferTo(dest);
 
         String convertedFileName = videoConverterService.sendToConvert(VideoConvertRequest.builder()
-                        .originalVideosDirectory(originalVideosDirectoryPath)
-                        .convertedVideosDirectory(convertedVideosDirectoryPath)
-                        .filename(dest.getName())
+                        .inputPath(originalVideosDirectoryPath)
+                        .outputPath(convertedVideosDirectoryPath)
+                        .modelInfo(modelService.getModelInfo(objectType).orElseThrow())
+                        .inputFilename(dest.getName())
                 .build());
 
         return convertedFileName;
