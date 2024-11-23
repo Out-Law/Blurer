@@ -9,7 +9,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +49,7 @@ public class VideoService {
 
 
     @SneakyThrows
-    public SseEmitter saveVideo(MultipartFile file) {
+    public String saveVideo(MultipartFile file) {
         if (file.isEmpty()) {
             throw new RuntimeException();
         }
@@ -62,13 +61,13 @@ public class VideoService {
 
         file.transferTo(dest);
 
-        videoConverterService.sendToConvert(VideoConvertRequest.builder()
+        String convertedFileName = videoConverterService.sendToConvert(VideoConvertRequest.builder()
                         .originalVideosDirectory(originalVideosDirectoryPath)
                         .convertedVideosDirectory(convertedVideosDirectoryPath)
                         .filename(dest.getName())
                 .build());
 
-        return sseEmitterService.createEmitter(dest.getName());
+        return convertedFileName;
     }
 
     @SneakyThrows

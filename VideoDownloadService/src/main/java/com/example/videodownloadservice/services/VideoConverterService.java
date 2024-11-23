@@ -15,13 +15,12 @@ public class VideoConverterService {
     private final WebClient videoConverterServiceWebClient;
     private final ApplicationEventPublisher eventPublisher;
 
-    public void sendToConvert(VideoConvertRequest videoConvertRequest) {
-        videoConverterServiceWebClient.post()
+    public String sendToConvert(VideoConvertRequest videoConvertRequest) {
+        return videoConverterServiceWebClient.post()
                 .uri("/convert")
                 .bodyValue(videoConvertRequest)
                 .retrieve()
-                .bodyToMono(Void.class)
-                .doOnSuccess((v) -> eventPublisher.publishEvent(new SendNotificationEvent(this, NotificationType.VIDEO_CONVERTED, videoConvertRequest.getFilename())))
-                .subscribe();
+                .bodyToMono(String.class)
+                .block();
     }
 }
