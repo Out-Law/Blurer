@@ -65,7 +65,7 @@ public class VideoService {
                         .inputPath(originalVideosDirectoryPath)
                         .outputPath(convertedVideosDirectoryPath)
                         .modelInfo(modelService.getModelInfo(objectType).orElseThrow())
-                        .inputFilename(dest.getName())
+                        .inputFileName(dest.getName())
                 .build());
 
         return convertedFileName;

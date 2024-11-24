@@ -6,6 +6,11 @@ meta {
 
 post {
   url: http://localhost:8080/api/videos/upload
-  body: none
+  body: multipartForm
   auth: none
+}
+
+body:multipart-form {
+  file: @file(/Users/out_law/Downloads/Хакатон/human_faces_1.mp4)
+  objectType: face
 }

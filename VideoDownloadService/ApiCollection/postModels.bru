@@ -1,0 +1,17 @@
+meta {
+  name: postModels
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:8080/api/models
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  protoFile: @file()
+  caffe: @file()
+  objectType: 
+}

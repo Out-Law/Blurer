@@ -46,7 +46,7 @@ public class ModelService {
                                     (List<String> names) -> {
                                         return ModelInfo.builder()
                                             .modelsPath(modelsDirectoryPath)
-                                            .caffe(names.stream().filter(name -> name.startsWith("caffe_")).findFirst().orElseThrow())
+                                            .caffeFile(names.stream().filter(name -> name.startsWith("caffe_")).findFirst().orElseThrow())
                                             .protoFile(names.stream().filter(name -> name.startsWith("proto_")).findFirst().orElseThrow())
                                             .build();
                                     }))));
@@ -66,9 +66,9 @@ public class ModelService {
 
     @SneakyThrows
     public void saveModel(MultipartFile proto, MultipartFile caffe, String objectType) {
-        if (proto.isEmpty() || caffe.isEmpty()) {
+        /*if (proto.isEmpty() || caffe.isEmpty()) {
             throw new RuntimeException();
-        }
+        }*/
 
         File modelsDirectory = new File(modelsDirectoryPath);
 
@@ -89,7 +89,7 @@ public class ModelService {
         models.put(objectType, ModelInfo.builder()
                         .modelsPath(modelsDirectoryPath)
                         .protoFile(protoFilename)
-                        .caffe(caffeFilename)
+                        .caffeFile(caffeFilename)
                         .build());
     }
 

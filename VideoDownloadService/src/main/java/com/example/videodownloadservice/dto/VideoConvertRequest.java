@@ -9,6 +9,6 @@ public class VideoConvertRequest {
 
     private final String inputPath;
     private final String outputPath;
-    private final String inputFilename;
+    private final String inputFileName;
     private final ModelInfo modelInfo;
 }

@@ -15,8 +15,8 @@ public class ModelController {
     private final ModelService modelService;
 
     @PostMapping("/upload")
-    public void uploadModel(@RequestParam MultipartFile protoFile, @RequestParam MultipartFile caffe, @RequestParam String objectType) {
-        modelService.saveModel(protoFile, caffe, objectType);
+    public void uploadModel(@RequestParam MultipartFile protoFile, @RequestParam MultipartFile caffeFile, @RequestParam String objectType) {
+        modelService.saveModel(protoFile, caffeFile, objectType);
     }
 
     @GetMapping
